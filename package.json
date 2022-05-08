@@ -1,0 +1,13 @@
+{
+  "name": "fengshi",
+  "version": "1.0.0",
+  "description": "丰食自动点餐",
+  "main": "main.ts",
+  "author": "Evan ",
+  "license": "MIT",
+  "scripts": {
+    "startp": "HTTPS_PROXY=127.0.0.1:8888  deno run --allow-net --cert ~/Desktop/charles-ssl-proxying-certificate.pem  main.ts",
+    "start": "deno run --allow-net main.ts",
+    "deploy": ". ./deploy.sh"
+  }
+}
