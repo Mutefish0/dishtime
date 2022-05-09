@@ -1,7 +1,8 @@
 import { format } from "https://deno.land/std@0.138.0/datetime/mod.ts";
+import * as qs from "https://deno.land/x/querystring@v1.0.2/mod.js";
 
 const COOKIE =
-  "WX_USS=AAJYFAAB-eA0EeQtHSlkdCRM4fVJpxZCnBpLLSgYFeMYNZ6xkEatsCRDtcr0QAbf~0HP5x~BekEwAAC7EbhxHECosPJgslDtvtVwzFACkNBZ05EK0JZRAMN~cLZWNnELrC6w8tIPgL8BJlDihOKgwGp8INY6Y0DzByHg1SP8UNLQsAAMBukxIneAAAQKGmMs";
+  "WX_USS=MAABaEHARa2lDOh0XEGpyOyE9RVRxCJJ~DwsFS5UMZ1ICD6sSpw3tcr0QAT6TGv4lwRz8FQAADzFYvQ~EsCgNpqG9Dtt06w9Fl8ENhaw-Da2C0QxWLVoOz3XRDvKvjA7YCSUNhN3WDAqFeBHWuvYO1MDDDrYV4BDS7P0LkQsAAGhfjhWCegAAQEdSaNMAAJ4";
 
 const USER_NAME = "程一凡";
 
@@ -541,4 +542,48 @@ export async function orderDish(
     shop,
     orderId,
   };
+}
+
+interface EatingDishDetail {
+  /** 订单id */
+  orderId: number;
+  /** 状态吗 */
+  status: 3;
+  subShopName: "你的心跳·酸菜小鱼-宝盛路店";
+  /** 取餐码 */
+  takeMealCode: "020";
+  /** 地址 */
+  address: "768创意产业园E座地下一层餐吧 地下一层餐吧";
+  /** 用餐时间类型 午餐，晚餐 */
+  mealTimeName: "午餐";
+}
+
+/** 获取正在进行的用餐 */
+export async function getEatingDishDetail(
+  shopId: number,
+  subShopId: number
+): Promise<EatingDishDetail[]> {
+  const query = {
+    shopId: `${shopId}`,
+    subShopId: `${subShopId}`,
+    unionShopId: "15998082420222",
+    shop_id: `${shopId}`,
+    sub_shop_id: `${subShopId}`,
+    union_shop_id: "15998082420222",
+  };
+  const resp = await fetch(
+    `https://fs.sf-express.com/fsweb/app/order/queryCoreInfoList?${qs.stringify(
+      query
+    )}`,
+    {
+      headers: commonHeaders,
+    }
+  );
+  const body = await resp.json();
+
+  if (body.errno) {
+    throw new Error(`${body.errno}-${body.errmsg}`);
+  }
+
+  return body.data.normalCoreInfoList;
 }
