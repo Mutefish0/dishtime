@@ -180,7 +180,7 @@ export async function fetchMenu(
     throw new Error(`${body.errno}-${body.errmsg}`);
   }
 
-  return body.data.list;
+  return body.data.list || [];
 }
 
 /** 添加到购物车 */
@@ -586,4 +586,21 @@ export async function getEatingDishDetail(
   }
 
   return body.data.normalCoreInfoList;
+}
+
+export async function fetchAllMenu() {
+  const shops = await fetchShops();
+  const foodGroup: { [ket: string]: string[] } = {};
+
+  for (let shop of shops) {
+    // 菜单
+    const menu = await fetchMenu(
+      shop.shopId,
+      shop.subShopId,
+      shop.menuId,
+      10208370
+    );
+    foodGroup[shop.settledShopName] = menu.map((f) => f.name);
+  }
+  return foodGroup;
 }
