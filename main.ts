@@ -89,7 +89,7 @@ cron("0 50 11 * * *", async function () {
 
 // 12.30 订晚餐
 cron("0 30 12 * * *", async () => {
-  await orderDishAndNotify("海盗虾饭", "麻婆豆腐小龙虾", "晚餐", "脉脉晚餐");
+  await orderDishAndNotify("霸蛮米粉", "麻辣牛肉粉", "晚餐", "脉脉晚餐");
 });
 // 18.50 提醒
 cron("0 50 18 * * *", async function () {

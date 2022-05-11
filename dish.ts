@@ -1,10 +1,9 @@
 import { format } from "https://deno.land/std@0.138.0/datetime/mod.ts";
 import * as qs from "https://deno.land/x/querystring@v1.0.2/mod.js";
+import "https://deno.land/x/dotenv/load.ts";
 
-const COOKIE =
-  "WX_USS=MAABaEHARa2lDOh0XEGpyOyE9RVRxCJJ~DwsFS5UMZ1ICD6sSpw3tcr0QAT6TGv4lwRz8FQAADzFYvQ~EsCgNpqG9Dtt06w9Fl8ENhaw-Da2C0QxWLVoOz3XRDvKvjA7YCSUNhN3WDAqFeBHWuvYO1MDDDrYV4BDS7P0LkQsAAGhfjhWCegAAQEdSaNMAAJ4";
-
-const USER_NAME = "程一凡";
+const COOKIE = Deno.env.get("COOKIE") || "";
+const USER_NAME = Deno.env.get("USER_NAME") || "";
 
 const commonHeaders = {
   Cookie: COOKIE,
@@ -178,6 +177,14 @@ export async function fetchMenu(
 
   if (body.errno) {
     throw new Error(`${body.errno}-${body.errmsg}`);
+  }
+
+  // 分组菜单
+  if (body.data.classList && body.data.classList.length > 0) {
+    return body.data.classList.reduce(
+      (prev: Food[], curr: { list: Food[] }) => [...prev, ...(curr.list || [])],
+      []
+    );
   }
 
   return body.data.list || [];
@@ -593,14 +600,17 @@ export async function fetchAllMenu() {
   const foodGroup: { [ket: string]: string[] } = {};
 
   for (let shop of shops) {
-    // 菜单
-    const menu = await fetchMenu(
-      shop.shopId,
-      shop.subShopId,
-      shop.menuId,
-      10208370
-    );
-    foodGroup[shop.settledShopName] = menu.map((f) => f.name);
+    const dishTimes = await fetchDishTimes(shop.shopId, shop.subShopId);
+    if (dishTimes.length > 0) {
+      // 菜单
+      const menu = await fetchMenu(
+        shop.shopId,
+        shop.subShopId,
+        shop.menuId,
+        dishTimes[0].type
+      );
+      foodGroup[shop.settledShopName] = menu.map((f) => f.name);
+    }
   }
   return foodGroup;
 }
