@@ -6,8 +6,7 @@
   "author": "Evan ",
   "license": "MIT",
   "scripts": {
-    "startp": "HTTPS_PROXY=127.0.0.1:8888  deno run --allow-net --cert ~/Desktop/charles-ssl-proxying-certificate.pem  main.ts",
-    "start": "deno run --allow-net main.ts",
+    "start": "deno run --allow-net --allow-read --allow-env main.ts",
     "deploy": ". ./deploy.sh"
   }
 }
