@@ -1,6 +1,8 @@
-import "https://deno.land/x/dotenv/load.ts";
+import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-const LARK_ROBOT_HOOK = Deno.env.get("LARK_ROBOT_HOOK") || "";
+const { LARK_ROBOT_HOOK } = config({
+  path: new URL(".env", import.meta.url).pathname,
+});
 
 export async function sendMessage(title: string, content: string) {
   await fetch(LARK_ROBOT_HOOK, {

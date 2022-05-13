@@ -96,4 +96,4 @@ cron("0 50 18 * * *", async function () {
   await eatingNotify();
 });
 
-// notifyWeekMenu();
+await eatingNotify();

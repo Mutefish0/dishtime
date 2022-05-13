@@ -1,9 +1,10 @@
 import { format } from "https://deno.land/std@0.138.0/datetime/mod.ts";
 import * as qs from "https://deno.land/x/querystring@v1.0.2/mod.js";
-import "https://deno.land/x/dotenv/load.ts";
+import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-const COOKIE = Deno.env.get("COOKIE") || "";
-const USER_NAME = Deno.env.get("USER_NAME") || "";
+const { COOKIE, USER_NAME } = config({
+  path: new URL(".env", import.meta.url).pathname,
+});
 
 const commonHeaders = {
   Cookie: COOKIE,
